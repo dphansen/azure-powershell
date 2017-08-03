@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  
+  
+	<UsingTask TaskName="SmartTestingTask" AssemblyFile="C:\azure-powershell\tools\BuildPackagesTask\Microsoft.Azure.Build.Tasks\bin\Debug\Microsoft.Azure.Build.Tasks.dll" />
+  
+	<Target Name="GetTests" DependsOnTargets="Build">
+	<SmartTestingTask  RepositoryOwner="Azure" RepositoryName="azure-powershell" PullRequestNumber="$(PullRequestNumber)" MapFilePath="..\..\TestMappings.json">
+		<Output TaskParameter ="TestAssemblies" ItemName="XUnitTests"/>
+	</SmartTestingTask>    
+	<Message Text="Using these test assemblies:"/>
+  <Message Text="%(XUnitTests.Identity)"/>
+	<Message Text="Total: @(XunitTests->Count())"/>	
+	</Target>
+
+	<ItemGroup>  
+		<LocalBuildTasks Include="Microsoft.Azure.Build.Tasks.sln" />  
+	</ItemGroup>  
+  
+	<Target Name="Build">  
+		<MSBuild  
+			Projects="@(LocalBuildTasks)"  
+			Targets="Build">  
+		</MSBuild>  
+	</Target>  
+  
+</Project>  
